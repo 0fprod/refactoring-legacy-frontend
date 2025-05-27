@@ -241,31 +241,33 @@ export class LibraryApp extends React.Component<any, any> {
 
         return (
             <div className="app-container">
-                <h1>LIBRARY APP</h1>
+                <h1 data-testid="app-title">LIBRARY APP</h1>
                 <div>
                     <input
                         className="library-input"
                         value={this.inputData}
                         placeholder={'Book Title'}
                         onChange={this.handleInputChange.bind(this)}
+                        data-testid={"book-title-input"}
                     />
                     <input
                         className="library-input"
                         value={this.coverData}
                         placeholder={'Cover Url'}
                         onChange={this.onCoverChange.bind(this)}
+                        data-testid={"book-cover-input"}
                     />
                 </div>
-                <button className="library-button add-book-button" onClick={this.add.bind(this)}>
+                <button className="library-button add-book-button" onClick={this.add.bind(this)} data-testid={"add-book-button"}>
                     Add Book
                 </button>
                 <h2>Books Read: {this.counter}</h2>
                 <div>
                 <button className="library-button all-filter" onClick={this.setFilter.bind(this, 'all')}>All</button>
-                    <button className="library-button completed-filter" onClick={this.setFilter.bind(this, 'completed')}>Read</button>
-                    <button className="library-button incomplete-filter" onClick={this.setFilter.bind(this, 'incomplete')}>Unread</button>
+                    <button className="library-button completed-filter" onClick={this.setFilter.bind(this, 'completed')} data-testid={"filter-read-button"}>Read</button>
+                    <button className="library-button incomplete-filter" onClick={this.setFilter.bind(this, 'incomplete')} data-testid={"filter-unread-button"}>Unread</button>
                 </div>
-                <ul className="book-list">
+                <ul className="book-list" data-testid={"book-list"}>
                 {books.map((b, index) => (
                     <li className="book">
                         {
@@ -275,11 +277,13 @@ export class LibraryApp extends React.Component<any, any> {
                                         className="book-edit-input"
                                         defaultValue={b.title} // Asumiendo que inputData se usa para la edición
                                         onChange={this.handleUpdateInputChange.bind(this)}
+                                        data-testId={"edit-book-title-input"}
                                     />
                                     <input
                                         className="book-edit-input"
                                         defaultValue={b.pictureUrl} //
                                         onChange={this.handlePicture.bind(this)}
+                                        data-testId={"edit-book-cover-input"}
                                     />
                                 </div>
                                 : <div className={"book-item"}>
@@ -291,17 +295,18 @@ export class LibraryApp extends React.Component<any, any> {
                                         </p>
                                         {!this.updating[index] &&
                                             <button className="book-button"
-                                                    onClick={this.toggleComplete.bind(this, index)}>
+                                                    onClick={this.toggleComplete.bind(this, index)}
+                                                    data-testid={"mark-as-read-button"}>
                                                 {b.completed ? 'Mark as Unread' : 'Mark as Read'}
                                             </button>}
                                         {!this.updating[index] &&
                                             <button className="book-button"
-                                                    onClick={() => this.edit(index, b.title, b.pictureUrl)}><IonIcon icon={createOutline}/>
+                                                    onClick={() => this.edit(index, b.title, b.pictureUrl)} data-testId={"edit-book-button"}><IonIcon icon={createOutline}/>
                                             </button>
                                         }
                                         {!this.updating[index] &&
                                             <button className="book-button book-delete-button"
-                                                    onClick={this.delete.bind(this, index)}>
+                                                    onClick={this.delete.bind(this, index)} data-testid={"delete-book-button"}>
                                                 <IonIcon icon={trash}/>
                                             </button>}
                                     </div>
@@ -311,11 +316,13 @@ export class LibraryApp extends React.Component<any, any> {
                         {this.updating[index] &&
                             <div>
                                 <button className="library-button book-update-button"
-                                        onClick={this.update.bind(this, index)}>
+                                        onClick={this.update.bind(this, index)}
+                                        data-testid={"save-book-button"}>
                                     Save
                                 </button>
                                 <button className="library-button book-update-button"
-                                        onClick={this.close.bind(this, index)}>
+                                        onClick={this.close.bind(this, index)}
+                                        data-testid={"cancel-book-update-button"}>
                                     Cancel
                                 </button>
                             </div>
