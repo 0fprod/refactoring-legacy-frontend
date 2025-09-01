@@ -7,14 +7,14 @@ export type Book = {
   readonly completed: boolean;
 };
 
-export function toggleCompleted(book: Book) {
+export function toggleCompleted(book: Book): Book {
   return {
     ...book,
     completed: !book.completed,
   };
 }
 
-export function updateTitle(book: Book, newTitle: string) {
+export function updateTitle(book: Book, newTitle: string): Book {
   ensureThatHaveValidLength(newTitle);
   ensureThatOnlyContainsAlphanumeric(newTitle);
   ensureThatNotContainsForbiddenWords(newTitle);
@@ -24,7 +24,7 @@ export function updateTitle(book: Book, newTitle: string) {
   };
 }
 
-export function updatePicture(book: Book, newPicture: string) {
+export function updatePicture(book: Book, newPicture: string): Book {
   ensureThatIsValidUrl(newPicture);
   return {
     ...book,
@@ -32,7 +32,7 @@ export function updatePicture(book: Book, newPicture: string) {
   };
 }
 
-export function createBook(title: string, picture: string) {
+export function createBook(title: string, picture: string): Book {
   ensureThatIsValidUrl(picture);
   ensureThatHaveValidLength(title);
   ensureThatOnlyContainsAlphanumeric(title);
