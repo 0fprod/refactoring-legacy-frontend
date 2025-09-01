@@ -13,8 +13,19 @@
     "noEmit": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "types": ["jest","cypress", "node", "testing-library__jest-dom"]
+    "types": [
+      "jest",
+      "cypress",
+      "node",
+      "testing-library__jest-dom"
+    ]
   },
-  "include": ["src/**/*.ts", "cypress/**/*.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

@@ -1,64 +1,101 @@
-
-describe('Library App', () => {
+describe("Library App", () => {
   beforeEach(() => {
-    cy.visit('http://localhost:5173');
+    cy.visit("http://localhost:5173");
   });
 
-  it('should display the correct title', () => {
-    cy.contains('[data-testid="app-title"]', 'LIBRARY APP');
+  it("should display the correct title", () => {
+    cy.contains('[data-test-id="titleHeader"]', "LIBRARY APP");
   });
 
-  it('should be able to add a new book', () => {
-    const bookTitle = 'New Book Title';
-    cy.addBook(bookTitle, 'https://example.com/cover.jpg');
-    cy.get('[data-testid="book-list"]').should('contain', bookTitle);
+  it("should be able to add new book", () => {
+    const aBook = "New book";
+    addBook(aBook);
+
+    cy.contains('[data-test-id="bookList"]', aBook).should("exist");
+    deleteBook();
   });
 
-  it('should be able to delete a book', () => {
-    const bookTitle = 'Book to be deleted';
-    cy.addBook(bookTitle, 'https://example.com/cover.jpg');
-    cy.get('[data-testid="book-list"]').should('contain', bookTitle);
+  it("should not be able to add a book with an invalid title", () => {
+    const aBook = "a";
+    addBook(aBook);
 
-    cy.get('[data-testid="delete-book-button"]').last().click();
-    cy.get('[data-testid="book-list"]').should('not.contain', bookTitle);
-  })
+    cy.on("window:alert", (str) => {
+      expect(str).to.equal("Error: The title must be between 3 and 100 characters long.");
+    });
 
-  it('should be able to edit a book', () => {
-    const originalTitle = 'Original Book Title';
-    const updatedTitle = 'Updated Book Title';
-    cy.addBook(originalTitle, 'https://example.com/cover.jpg');
-    cy.get('[data-testid="book-list"]').should('contain', originalTitle);
-
-    cy.get('[data-testid="edit-book-button"]').last().click();
-    cy.get('[data-testid="edit-book-title-input"]').clear().type(updatedTitle);
-    cy.get('[data-testid="save-book-button"]').click();
-
-    cy.get('[data-testid="book-list"]').should('contain', updatedTitle);
-    cy.get('[data-testid="book-list"]').should('not.contain', originalTitle);
+    cy.contains('[data-test-id="bookList"]', aBook).should("not.exist");
   });
 
-  it('should filter unread books', () => {
-    const book = 'Unread Book';
+  it("should be able to delete a book", () => {
+    const aBook = "New book";
+    addBook(aBook);
 
-    cy.addBook(book, 'https://example.com/cover.jpg');
+    deleteBook();
 
-    cy.get('[data-testid="filter-unread-button"]').click();
-    cy.get('[data-testid="book-list"]').should('contain', book);
-
-    cy.get('[data-testid="filter-read-button"]').click();
-    cy.get('[data-testid="book-list"]').should('not.contain', book);
+    cy.contains('[data-test-id="bookList"]', aBook).should("not.exist");
   });
 
-  it('should filter read books', () => {
-    const book = 'Read Book';
+  it("should be able to mark as read a book", () => {
+    const aBook = "New book";
+    addBook(aBook);
 
-    cy.addBook(book, 'https://example.com/cover.jpg');
-    cy.get('[data-testid="mark-as-read-button"]').last().click();
+    cy.get('[data-test-id="markAsReadButton"]').click();
 
-    cy.get('[data-testid="filter-read-button"]').click();
-    cy.get('[data-testid="book-list"]').should('contain', book);
+    cy.get('[data-test-id="markAsReadIcon"]').should("exist");
+    deleteBook();
+  });
 
-    cy.get('[data-testid="filter-unread-button"]').click();
-    cy.get('[data-testid="book-list"]').should('not.contain', book);
+  it("should be able to filter as read", () => {
+    const aBook = "New book";
+    addBook(aBook);
+    cy.get('[data-test-id="markAsReadButton"]').click();
+    const otherBook = "Other book";
+    addBook(otherBook);
+
+    cy.get('[data-test-id="readFilterButton"]').click();
+
+    cy.get('[data-test-id="bookElement"]').should("to.have.length", 1);
+    deleteBook();
+    cy.get('[data-test-id="allFilterButton"]').click();
+    deleteBook();
+  });
+
+  it("should be able to update a book", () => {
+    const aBook = "New book";
+    addBook(aBook);
+    cy.get('[data-test-id="editButton"]').click();
+    cy.get('[data-test-id="editTitleInput"]').clear().type("New book title");
+
+    cy.get('[data-test-id="updateButton"]').click();
+
+    cy.contains('[data-test-id="bookList"]', "New book title").should("exist");
+    deleteBook();
+  });
+
+  it("should not be able to update a book with invalid title", () => {
+    const aBook = "New book";
+    addBook(aBook);
+    cy.get('[data-test-id="editButton"]').click();
+    cy.get('[data-test-id="editTitleInput"]').clear().type("a");
+
+    cy.get('[data-test-id="updateButton"]').click();
+
+    cy.on("window:alert", (str) => {
+      expect(str).to.equal("Error: The title must be between 3 and 100 characters long.");
+    });
+
+    cy.contains('[data-test-id="bookList"]', aBook).should("exist");
+    deleteBook();
   });
 });
+
+function addBook(aBook: string) {
+  cy.get('[data-test-id="titleInput"]').type(aBook);
+  cy.get('[data-test-id="coverInput"]').type("https://bucket.mlcdn.com/a/1590/1590228/images/75a5707709691e7651c5ebcace5287da35c56015.png");
+
+  cy.get('[data-test-id="addButton"]').click();
+}
+
+function deleteBook() {
+  cy.get('[data-test-id="deleteButton"]').click();
+}
